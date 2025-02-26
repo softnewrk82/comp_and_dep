@@ -310,91 +310,93 @@ with DAG(
 
         for h in range(len(comp_list_inn_comp)):
 
-
-            var_status_has_more = "Да"
-            i_page = 0
-
-            while var_status_has_more == "Да":
-
-
-                var_inn = comp_list_inn_comp[h]
-                var_kpp = comp_list_kpp_comp[h]
-                var_full_name = comp_list_full_name_comp[h]
-
-                if len(var_inn) <= 10:
-                    parameters_real = {
-                    "jsonrpc": "2.0",
-                    "method": "СБИС.СписокПодразделений",
-                    "params": {
-                        "Параметр": {
-                            "Фильтр": {
-                                "НашаОрганизация": {
-                                "СвЮЛ": {
-                                    "ИНН": var_inn,
-                                    "КПП": var_kpp
+            if comp_list_inn_comp[h] = '':
+                pass
+            else:
+                var_status_has_more = "Да"
+                i_page = 0
+    
+                while var_status_has_more == "Да":
+    
+    
+                    var_inn = comp_list_inn_comp[h]
+                    var_kpp = comp_list_kpp_comp[h]
+                    var_full_name = comp_list_full_name_comp[h]
+    
+                    if len(var_inn) <= 10:
+                        parameters_real = {
+                        "jsonrpc": "2.0",
+                        "method": "СБИС.СписокПодразделений",
+                        "params": {
+                            "Параметр": {
+                                "Фильтр": {
+                                    "НашаОрганизация": {
+                                    "СвЮЛ": {
+                                        "ИНН": var_inn,
+                                        "КПП": var_kpp
+                                    }
+                                    }
+                                },
+                                "Навигация": {
+                                    "РазмерСтраницы": "20",
+                                    "Страница": i_page
                                 }
-                                }
-                            },
-                            "Навигация": {
-                                "РазмерСтраницы": "20",
-                                "Страница": i_page
                             }
                         }
-                    }
-                    }
-
-                elif len(var_inn) > 10:
-                    parameters_real = {
-                    "jsonrpc": "2.0",
-                    "method": "СБИС.СписокПодразделений",
-                    "params": {
-                        "Параметр": {
-                            "Фильтр": {
-                                "НашаОрганизация": {
-                                "СвФЛ": {
-                                    "ИНН": var_inn,
+                        }
+    
+                    elif len(var_inn) > 10:
+                        parameters_real = {
+                        "jsonrpc": "2.0",
+                        "method": "СБИС.СписокПодразделений",
+                        "params": {
+                            "Параметр": {
+                                "Фильтр": {
+                                    "НашаОрганизация": {
+                                    "СвФЛ": {
+                                        "ИНН": var_inn,
+                                    }
+                                    }
+                                },
+                                "Навигация": {
+                                    "РазмерСтраницы": "20",
+                                    "Страница": i_page
                                 }
-                                }
-                            },
-                            "Навигация": {
-                                "РазмерСтраницы": "20",
-                                "Страница": i_page
                             }
                         }
-                    }
-                    }
-
-                url_real = "https://online.sbis.ru/service/?srv=1"
-
-                response_points = requests.post(url_real, json=parameters_real, headers=headers)
-                str_to_dict_points_main = json.loads(response_points.text)
-
-
-                json_data_points = json.dumps(str_to_dict_points_main, ensure_ascii=False, indent=4).encode("utf8").decode()
-
-                with open("DICT_Dep.json", 'w') as json_file_points_o:
-                    json_file_points_o.write(json_data_points)
-
-
-                for k in str_to_dict_points_main["result"]["Подразделение"]:
-
-                    external_id.append(k["ВнешнийИдентификатор"])
-                    inside_id.append(k["Идентификатор"])
-                    code.append(k["Код"])
-                    name.append(k["Название"])
-                    chapter_inside_id.append(k["Раздел"]["Идентификатор"])
-                    chapter_inside_code.append(k["Раздел"]["Код"])
-                    chapter_inside_name.append(k["Раздел"]["Название"])
-
-                    dep_comp_inn.append(var_inn)
-                    dep_comp_kpp.append(var_kpp)
-                    dep_comp_full_name.append(var_full_name)
-
-                if str_to_dict_points_main["result"]["Навигация"]["ЕстьЕще"] == "Нет":
-                    var_status_has_more = False
-
-                elif str_to_dict_points_main["result"]["Навигация"]["ЕстьЕще"] == "Да":
-                    i_page += 1
+                        }
+    
+                    url_real = "https://online.sbis.ru/service/?srv=1"
+    
+                    response_points = requests.post(url_real, json=parameters_real, headers=headers)
+                    str_to_dict_points_main = json.loads(response_points.text)
+    
+    
+                    json_data_points = json.dumps(str_to_dict_points_main, ensure_ascii=False, indent=4).encode("utf8").decode()
+    
+                    with open("DICT_Dep.json", 'w') as json_file_points_o:
+                        json_file_points_o.write(json_data_points)
+    
+    
+                    for k in str_to_dict_points_main["result"]["Подразделение"]:
+    
+                        external_id.append(k["ВнешнийИдентификатор"])
+                        inside_id.append(k["Идентификатор"])
+                        code.append(k["Код"])
+                        name.append(k["Название"])
+                        chapter_inside_id.append(k["Раздел"]["Идентификатор"])
+                        chapter_inside_code.append(k["Раздел"]["Код"])
+                        chapter_inside_name.append(k["Раздел"]["Название"])
+    
+                        dep_comp_inn.append(var_inn)
+                        dep_comp_kpp.append(var_kpp)
+                        dep_comp_full_name.append(var_full_name)
+    
+                    if str_to_dict_points_main["result"]["Навигация"]["ЕстьЕще"] == "Нет":
+                        var_status_has_more = False
+    
+                    elif str_to_dict_points_main["result"]["Навигация"]["ЕстьЕще"] == "Да":
+                        i_page += 1
 
 
         col = [
