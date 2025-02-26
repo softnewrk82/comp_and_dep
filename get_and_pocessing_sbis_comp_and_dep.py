@@ -310,7 +310,7 @@ with DAG(
 
         for h in range(len(comp_list_inn_comp)):
 
-            if comp_list_inn_comp[h] = '':
+            if comp_list_inn_comp[h] == '':
                 pass
             else:
                 var_status_has_more = "Да"
